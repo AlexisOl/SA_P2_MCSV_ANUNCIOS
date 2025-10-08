@@ -1,10 +1,13 @@
 package com.example.Anuncios.Anuncio.Dominio.ObjetosValor;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class CostosAnuncio {
     private Double costoVisibilidad;
     private Double costoOcultacion;
