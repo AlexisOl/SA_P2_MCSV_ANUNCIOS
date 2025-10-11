@@ -26,15 +26,16 @@ public class AnuncioRestAdapter {
     private final ListarAnuncioEspecificoInputPort listarAnuncioEspecificoInputPort;
 
     private final AnuncioRestMapper anuncioRestMapper;
-    @PostMapping()
+    @PostMapping(consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    public ResponseEntity<ResponseAnuncioDTO> crearAnuncio(@Valid @RequestBody CrearAnuncioDTO crearAnuncioDTO) {
+    public ResponseEntity<ResponseAnuncioDTO> crearAnuncio(@ModelAttribute CrearAnuncioDTO crearAnuncioDTO) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(this.anuncioRestMapper.toResponseAnuncioDto(
-                        crearAnuncioInputPort.crearAnuncio((crearAnuncioDTO))
+                        crearAnuncioInputPort.crearAnuncio(crearAnuncioDTO)
                 ));
     }
+
 
     @GetMapping("/cine/{id}")
     @Transactional

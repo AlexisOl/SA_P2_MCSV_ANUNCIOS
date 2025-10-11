@@ -8,6 +8,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.net.URLConnection;
 
 @Service
 public class SubirArchivo implements SubirArchivoInputPort {
@@ -21,13 +22,22 @@ public class SubirArchivo implements SubirArchivoInputPort {
 
 
     @Override
-    public String subirArchivo(MultipartFile file) {
-        String key = "uploads/" + file.getOriginalFilename();
+    public String subirArchivo(MultipartFile file, String nombreUnico) {
+        String key = "anuncios/" + nombreUnico;
+
+        // Detectar el tipo MIME
+        String contentType = URLConnection.guessContentTypeFromName(file.getOriginalFilename());
+        if (contentType == null) {
+            contentType = getContentTypeByExtension(file.getOriginalFilename());
+        }
+
+
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(BUCKET)
                 .key(key)
                 .acl("public-read")
+                .contentType(contentType)
                 .build();
 
         try {
@@ -37,5 +47,18 @@ public class SubirArchivo implements SubirArchivoInputPort {
         }
 
         return "https://" + BUCKET + ".s3.amazonaws.com/" + key;
+    }
+
+
+    private String getContentTypeByExtension(String fileName) {
+        String lower = fileName.toLowerCase();
+        if (lower.endsWith(".png")) return "image/png";
+        if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
+        if (lower.endsWith(".gif")) return "image/gif";
+        if (lower.endsWith(".mp4")) return "video/mp4";
+        if (lower.endsWith(".mov")) return "video/quicktime";
+        if (lower.endsWith(".webm")) return "video/webm";
+        if (lower.endsWith(".avi")) return "video/x-msvideo";
+        return "application/octet-stream";
     }
 }

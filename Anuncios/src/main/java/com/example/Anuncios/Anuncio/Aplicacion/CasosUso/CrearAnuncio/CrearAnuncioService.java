@@ -6,6 +6,8 @@ import com.example.Anuncios.Anuncio.Dominio.Anuncio;
 import com.example.Anuncios.Anuncio.Dominio.ObjetosValor.CostosAnuncio;
 import com.example.Anuncios.Anuncio.Dominio.TipoAnuncio;
 import com.example.Anuncios.Anuncio.Infraestructura.Eventos.EnvioMensajesCorreoDTO;
+import com.example.Anuncios.MaterialAnuncio.Aplicacion.CasosUso.CrearMaterialAnuncio.CrearMaterialAnuncioDTO;
+import com.example.Anuncios.MaterialAnuncio.Aplicacion.ports.Input.CrearMaterialAnuncioInputPort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,8 @@ public class CrearAnuncioService implements CrearAnuncioInputPort {
 
     public CrearAnuncioService(CrearAnuncioOutputPort crearAnuncioOutputPort,
                                KafkaTemplate<String, String> kafkaTemplate,
-                               ObjectMapper objectMapper){
+                               ObjectMapper objectMapper
+                             ){
         this.crearAnuncioOutputPort = crearAnuncioOutputPort;
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
@@ -46,6 +49,9 @@ public class CrearAnuncioService implements CrearAnuncioInputPort {
         );
 
        Anuncio nuevoAnuncio= this.crearAnuncioOutputPort.crearAnuncio(objetoAnuncio);
+
+
+
 
         try {
             // Crear DTO para notificación
