@@ -1,4 +1,4 @@
-package com.example.Anuncios.Anuncio.Infraestructura.Eventos;
+package com.example.Anuncios.Anuncio.Infraestructura.Eventos.DTO;
 
 import lombok.*;
 

@@ -4,5 +4,5 @@ import com.example.Anuncios.Anuncio.Aplicacion.CasosUso.CrearAnuncio.CrearAnunci
 import com.example.Anuncios.Anuncio.Dominio.Anuncio;
 
 public interface CrearAnuncioInputPort {
-    Anuncio crearAnuncio(CrearAnuncioDTO anuncio);
+    Anuncio crearAnuncio(CrearAnuncioDTO anuncio) ;
 }

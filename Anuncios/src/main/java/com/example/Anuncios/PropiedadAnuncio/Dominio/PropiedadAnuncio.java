@@ -1,6 +1,7 @@
 package com.example.Anuncios.PropiedadAnuncio.Dominio;
 
 
+import com.example.Anuncios.Anuncio.Dominio.Anuncio;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,4 +13,19 @@ import java.util.UUID;
 public class PropiedadAnuncio {
     private UUID id;
     private LocalDate fecha;
+    private LocalDate fechaFin;
+    private UUID usuario;
+    private Anuncio anuncio;
+    private VigenciaAnuncio vigencia;
+
+
+    public PropiedadAnuncio(UUID id, LocalDate fecha, LocalDate fechaFin, UUID usuario,Anuncio anuncio, VigenciaAnuncio vigencia) {
+        this.id = id;
+        this.fecha = fecha;
+        this.fechaFin = fechaFin;
+        this.usuario = usuario;
+        this.anuncio = anuncio;
+        this.vigencia = vigencia;
+
+    }
 }
