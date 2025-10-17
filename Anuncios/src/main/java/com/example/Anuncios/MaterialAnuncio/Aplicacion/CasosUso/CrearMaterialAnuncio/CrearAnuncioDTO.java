@@ -17,7 +17,6 @@ public class CrearAnuncioDTO {
     private Double costoVisibilidad;
     private Double costoOcultacion;
     private Boolean activo;
-    private UUID idCine ;
 
 
 }

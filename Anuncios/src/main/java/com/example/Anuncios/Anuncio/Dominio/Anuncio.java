@@ -14,17 +14,15 @@ public class Anuncio {
     private TipoAnuncio tipo;
     private CostosAnuncio costo;
     private Boolean activo;
-    private UUID idCine ;
 
 
 
-    public Anuncio(UUID id, String titulo,  TipoAnuncio tipo, CostosAnuncio costo, UUID idCIne) {
+    public Anuncio(UUID id, String titulo,  TipoAnuncio tipo, CostosAnuncio costo) {
         this.id = id;
         this.titulo = titulo;
         this.tipo = tipo;
         this.costo = costo;
         this.activo = true;
-        this.idCine = idCIne;
     }
 
 }

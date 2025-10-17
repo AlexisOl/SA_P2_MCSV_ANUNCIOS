@@ -17,15 +17,18 @@ public class PropiedadAnuncio {
     private UUID usuario;
     private Anuncio anuncio;
     private VigenciaAnuncio vigencia;
+    private String estado;
 
 
-    public PropiedadAnuncio(UUID id, LocalDate fecha, LocalDate fechaFin, UUID usuario,Anuncio anuncio, VigenciaAnuncio vigencia) {
+    public PropiedadAnuncio(UUID id, LocalDate fecha, LocalDate fechaFin, UUID usuario,Anuncio anuncio, VigenciaAnuncio vigencia,
+                            String estado) {
         this.id = id;
         this.fecha = fecha;
         this.fechaFin = fechaFin;
         this.usuario = usuario;
         this.anuncio = anuncio;
         this.vigencia = vigencia;
+        this.estado= estado;
 
     }
 }

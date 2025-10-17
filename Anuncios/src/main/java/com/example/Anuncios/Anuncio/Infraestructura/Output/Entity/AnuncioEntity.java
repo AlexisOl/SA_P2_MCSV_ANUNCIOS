@@ -31,7 +31,6 @@ public class AnuncioEntity {
     private Double costoOcultacion;
     @Column(nullable = false)
     private Boolean activo;
-    @Column(name = "id_cine", nullable = false)
-    private UUID idCine ;
+
 
 }

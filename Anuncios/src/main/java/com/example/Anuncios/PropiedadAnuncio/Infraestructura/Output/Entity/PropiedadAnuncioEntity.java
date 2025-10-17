@@ -33,5 +33,7 @@ public class PropiedadAnuncioEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private VigenciaAnuncio  vigencia;
+    @Transient
+    private String estado;
 
 }

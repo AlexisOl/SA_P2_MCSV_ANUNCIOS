@@ -50,9 +50,7 @@ public class AnuncioPersitenciaAdaptador implements CrearAnuncioOutputPort, List
 
     @Override
     public List<Anuncio> listarAnunciosCine(UUID idCine) {
-        return this.anuncioMapper.toAnuncioList(
-                this.anuncioRepository.findAllByIdCine(idCine)
-        );
+        return null;
     }
 
     @Override

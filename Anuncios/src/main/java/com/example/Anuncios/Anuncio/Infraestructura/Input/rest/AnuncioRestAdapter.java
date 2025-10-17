@@ -37,12 +37,6 @@ public class AnuncioRestAdapter {
     }
 
 
-    @GetMapping("/cine/{id}")
-    @Transactional
-
-    public List<ResponseAnuncioDTO> listadoAnuncios(@PathVariable("id") UUID id) {
-        return this.anuncioRestMapper.toResponseAnunciosDto(this.listarAnunciosCineInputPort.listarAnunciosCine(id)) ;
-    }
 
 
     @GetMapping("/{id}")

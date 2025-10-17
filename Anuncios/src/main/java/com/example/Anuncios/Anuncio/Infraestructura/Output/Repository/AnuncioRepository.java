@@ -7,5 +7,4 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AnuncioRepository extends JpaRepository<AnuncioEntity, UUID> {
-    List<AnuncioEntity> findAllByIdCine(UUID idCine);
 }

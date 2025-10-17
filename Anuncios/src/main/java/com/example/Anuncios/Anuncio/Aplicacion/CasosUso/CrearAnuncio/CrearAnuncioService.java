@@ -6,6 +6,7 @@ import com.example.Anuncios.Anuncio.Aplicacion.ports.Output.Eventos.VerificarCin
 import com.example.Anuncios.Anuncio.Dominio.Anuncio;
 import com.example.Anuncios.Anuncio.Dominio.ObjetosValor.CostosAnuncio;
 import com.example.Anuncios.Anuncio.Dominio.TipoAnuncio;
+import com.example.Anuncios.Anuncio.Infraestructura.Eventos.DTO.EnvioMensajesCorreoDTO;
 import com.example.Anuncios.Anuncio.Infraestructura.Eventos.DTO.VerificarCIne.VerificarCineDTO;
 import com.example.Anuncios.Anuncio.Infraestructura.Eventos.DTO.VerificarCIne.VerificarCineRespuestaDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,17 +53,17 @@ public class CrearAnuncioService implements CrearAnuncioInputPort {
         // verificar cine 
 
         boolean cineExists = false;
-        try {
-            cineExists = this.verificarCineOutputPort.verificarCine(anuncio.getIdCine()).get();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-
-        if (!cineExists) {
-            throw new IllegalArgumentException("El cine con ID " + anuncio.getIdCine() + " no existe.");
-        }
+//        try {
+//            cineExists = this.verificarCineOutputPort.verificarCine(anuncio.getIdCine()).get();
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        } catch (ExecutionException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        if (!cineExists) {
+//            throw new IllegalArgumentException("El cine con ID " + anuncio.getIdCine() + " no existe.");
+//        }
 
         Anuncio objetoAnuncio =new Anuncio(
                 UUID.randomUUID(),
@@ -71,8 +72,7 @@ public class CrearAnuncioService implements CrearAnuncioInputPort {
                 new CostosAnuncio(
                         anuncio.getCostoVisibilidad(),
                         anuncio.getCostoOcultacion()
-                ),
-                anuncio.getIdCine()
+                )
                 // anuncio.getActivo()
         );
 
@@ -80,22 +80,22 @@ public class CrearAnuncioService implements CrearAnuncioInputPort {
 
 
 
-//
-//        try {
-//            // Crear DTO para notificación
-//            EnvioMensajesCorreoDTO correoDTO = new EnvioMensajesCorreoDTO();
-//            correoDTO.setCorreo("carlosovalle202031064@cunoc.edu.gt");
-//            correoDTO.setMensaje("Nuevo anuncio creado");
-//            correoDTO.setDescripcion("Se creó el anuncio con título: " + anuncio.getTitulo());
-//
-//            // Convertir a JSON
-//            String mensaje = objectMapper.writeValueAsString(correoDTO);
-//
-//            // Publicar en Kafka
-//            kafkaTemplate.send("creacion-auncio", mensaje);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
+        try {
+            // Crear DTO para notificación
+            EnvioMensajesCorreoDTO correoDTO = new EnvioMensajesCorreoDTO();
+            correoDTO.setCorreo("carlosovalle202031064@cunoc.edu.gt");
+            correoDTO.setMensaje("Nuevo anuncio creado");
+            correoDTO.setDescripcion("Se creó el anuncio con título: " + anuncio.getTitulo());
+
+            // Convertir a JSON
+            String mensaje = objectMapper.writeValueAsString(correoDTO);
+
+            // Publicar en Kafka
+            kafkaTemplate.send("creacion-auncio", mensaje);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         return nuevoAnuncio;
