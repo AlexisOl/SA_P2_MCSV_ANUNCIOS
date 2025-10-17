@@ -62,6 +62,8 @@ public class PropiedadAnuncioKafkaAdaptador implements VerificarSaldoCineOutputP
     public void handleAnuncioFallido(@Payload String mensaje,
                                       @Header(KafkaHeaders.CORRELATION_ID) String correlationId) throws Exception {
         AnuncioFallidoDTO evento = objectMapper.readValue(mensaje, AnuncioFallidoDTO.class);
+
+        System.out.println(evento.getAnuncioId()+ "aca deberia de decir cual");
         this.completarEstadoPropiedadAnuncioService.completarPropiedadAnuncio(
                 evento.getAnuncioId(),
                 false,

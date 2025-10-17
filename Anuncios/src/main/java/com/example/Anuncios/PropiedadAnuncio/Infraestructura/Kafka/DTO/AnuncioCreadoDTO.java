@@ -8,6 +8,7 @@ import java.util.UUID;
 public class AnuncioCreadoDTO
 {
     private UUID anuncioId;
+    private UUID idCine;
     private double costo;
     private String correlationId;
 }
