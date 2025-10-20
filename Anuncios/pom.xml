@@ -43,6 +43,17 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <!-- para la dependencia de pom desde github -->
+
+
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>comun</artifactId>
+            <version>1.0.12-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Spring Boot -->
         <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -167,6 +178,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/AlexisOl/SA_P2_COMMON</url>
+        </repository>
+    </repositories>
 
     <build>
         <finalName>mcsv-anuncios</finalName>

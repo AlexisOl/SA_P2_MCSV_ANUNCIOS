@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface MaterialAnuncioRepository extends JpaRepository<MaterialAnuncioEntity, UUID> {
+    MaterialAnuncioEntity getByIdAnuncio_Id(UUID idAnuncioId);
 }

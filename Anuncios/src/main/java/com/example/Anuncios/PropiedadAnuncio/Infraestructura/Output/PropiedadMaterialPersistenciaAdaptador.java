@@ -4,19 +4,21 @@ package com.example.Anuncios.PropiedadAnuncio.Infraestructura.Output;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.CrearPropiedadAnuncioOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.EstadoAnuncio.ActualizarEstadoAnuncioOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.EstadoAnuncio.EliminarAnuncioOutputPort;
+import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.ExisteAunciosActualesCIneOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Dominio.PropiedadAnuncio;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Output.Mapper.PropiedadAnuncioMapper;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Output.Repository.PropiedadAnuncioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @AllArgsConstructor
 public class PropiedadMaterialPersistenciaAdaptador implements CrearPropiedadAnuncioOutputPort,
-        ActualizarEstadoAnuncioOutputPort,
+        ActualizarEstadoAnuncioOutputPort, ExisteAunciosActualesCIneOutputPort,
         EliminarAnuncioOutputPort {
 
     private PropiedadAnuncioRepository propiedadAnuncioRepository;
@@ -50,5 +52,10 @@ public class PropiedadMaterialPersistenciaAdaptador implements CrearPropiedadAnu
         }
         propiedadAnuncioRepository.deleteById(anuncioId);
         estadoCache.remove(anuncioId);
+    }
+
+    @Override
+    public List<PropiedadAnuncio> listaAnunciosActuales() {
+        return null;
     }
 }

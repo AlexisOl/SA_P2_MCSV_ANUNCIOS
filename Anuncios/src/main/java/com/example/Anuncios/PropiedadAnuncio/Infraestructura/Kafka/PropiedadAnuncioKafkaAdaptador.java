@@ -2,6 +2,7 @@ package com.example.Anuncios.PropiedadAnuncio.Infraestructura.Kafka;
 
 import com.example.Anuncios.Anuncio.Aplicacion.ports.Output.Eventos.VerificarCineOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.CasosUso.CompletarEstadoPropiedadAnuncio.CompletarEstadoPropiedadAnuncioService;
+import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.CrearFactura.GenerarFacturaOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.VerificarSaldoCineOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Kafka.DTO.AnuncioCreadoDTO;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Kafka.DTO.AnuncioFallidoDTO;
@@ -22,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Component
 @AllArgsConstructor
-public class PropiedadAnuncioKafkaAdaptador implements VerificarSaldoCineOutputPort {
+public class PropiedadAnuncioKafkaAdaptador implements VerificarSaldoCineOutputPort, GenerarFacturaOutputPort {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final CompletarEstadoPropiedadAnuncioService completarEstadoPropiedadAnuncioService;
@@ -44,7 +45,25 @@ public class PropiedadAnuncioKafkaAdaptador implements VerificarSaldoCineOutputP
         }
     }
 
+    @Override
+    public void generarFactura(com.example.comun.DTO.FacturaAnuncio.AnuncioCreadoDTO anuncioCreado) {
+        try {
+            String mensaje =  objectMapper.writeValueAsString(anuncioCreado);
+            Message<String> mensajeKafka = MessageBuilder
+                    .withPayload(mensaje)
+                    .setHeader(KafkaHeaders.TOPIC, "crear-factura-anuncio")
+                    .setHeader(KafkaHeaders.CORRELATION_ID, anuncioCreado.getCorrelationId())
+                    .build();
 
+            kafkaTemplate.send(mensajeKafka);
+        } catch (Exception e) {
+            throw new RuntimeException("Fallo en publicar el evento de propiedad anuncio: " + e.getMessage(), e);
+        }
+    }
+
+    //-------------------------------------
+    //-------------------------------------
+    //-------------------------------------
     // escuachas
     @KafkaListener(topics = "cine-actualizado", groupId = "anuncios-group")
     public void handleCineActualizado(@Payload String mensaje,
@@ -70,5 +89,6 @@ public class PropiedadAnuncioKafkaAdaptador implements VerificarSaldoCineOutputP
                 evento.getMotivoFallo()
         );
     }
+
 
 }

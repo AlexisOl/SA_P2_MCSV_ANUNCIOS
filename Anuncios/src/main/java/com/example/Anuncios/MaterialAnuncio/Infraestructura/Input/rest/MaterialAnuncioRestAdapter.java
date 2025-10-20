@@ -8,6 +8,7 @@ import com.example.Anuncios.Anuncio.Infraestructura.Input.rest.Mapper.AnuncioRes
 import com.example.Anuncios.Anuncio.Infraestructura.Input.rest.Model.ResponseAnuncioDTO;
 import com.example.Anuncios.MaterialAnuncio.Aplicacion.CasosUso.CrearMaterialAnuncio.CrearMaterialAnuncioDTO;
 import com.example.Anuncios.MaterialAnuncio.Aplicacion.ports.Input.CrearMaterialAnuncioInputPort;
+import com.example.Anuncios.MaterialAnuncio.Aplicacion.ports.Input.ListarMaterialAnuncioEspecificoInputPort;
 import com.example.Anuncios.MaterialAnuncio.Infraestructura.Input.rest.Mapper.MaterialAnuncioRestMapper;
 import com.example.Anuncios.MaterialAnuncio.Infraestructura.Input.rest.Model.ResponseMaterialAnuncioDTO;
 import lombok.AllArgsConstructor;
@@ -17,15 +18,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/materialAnuncio")
 public class MaterialAnuncioRestAdapter {
 
     private final CrearMaterialAnuncioInputPort crearMaterialAnuncioInputPort;
-
+    private final ListarMaterialAnuncioEspecificoInputPort  listarMaterialAnuncioEspecificoInputPort;
 
     private final MaterialAnuncioRestMapper materialAnuncioRestMapper;
+
+
     @PostMapping(consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
@@ -40,6 +45,15 @@ public class MaterialAnuncioRestAdapter {
                         crearMaterialAnuncioInputPort.crearMaterialAnuncio(crearAnuncioDTO, texto, linkimagen, linkvideo)
                 ));
     }
+
+
+
+    @GetMapping("/{id}")
+    @Transactional
+    public ResponseMaterialAnuncioDTO listadoAnuncioEspecifico(@PathVariable("id") UUID id) {
+        return this.materialAnuncioRestMapper.toReponseMaterialAnuncio(this.listarMaterialAnuncioEspecificoInputPort.getMaterialAnuncio(id)) ;
+    }
+
 
 
 }

@@ -5,6 +5,7 @@ import com.example.Anuncios.Anuncio.Aplicacion.ports.Input.ListarAnuncioEspecifi
 import com.example.Anuncios.Anuncio.Aplicacion.ports.Output.ExisteAnuncioIdOutputPort;
 import com.example.Anuncios.Anuncio.Dominio.Anuncio;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Input.CrearPropiedadAnuncioInputPort;
+import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.CrearFactura.GenerarFacturaOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.CrearPropiedadAnuncioOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.VerificarSaldoCineOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Dominio.PropiedadAnuncio;
@@ -25,15 +26,17 @@ public class CrearPropiedadAnuncioService implements CrearPropiedadAnuncioInputP
     private final ListarAnuncioEspecificoInputPort listarAnuncioEspecificoInputPort;
 
     private final VerificarSaldoCineOutputPort verificarSaldoCineOutputPort;
-
+    private final GenerarFacturaOutputPort generarFacturaOutputPort;
     public CrearPropiedadAnuncioService(CrearPropiedadAnuncioOutputPort crearPropiedadAnuncioOutputPort,
                                         ExisteAnuncioIdOutputPort existeAnuncioIdOutputPort,
                                         ListarAnuncioEspecificoInputPort listarAnuncioEspecificoInputPort,
-                                        VerificarSaldoCineOutputPort verificarSaldoCineOutputPort) {
+                                        VerificarSaldoCineOutputPort verificarSaldoCineOutputPort,
+                                        GenerarFacturaOutputPort generarFacturaOutputPort) {
         this.crearPropiedadAnuncioOutputPort=  crearPropiedadAnuncioOutputPort;
         this.existeAnuncioIdOutputPort = existeAnuncioIdOutputPort;
         this.listarAnuncioEspecificoInputPort=listarAnuncioEspecificoInputPort;
         this.verificarSaldoCineOutputPort=verificarSaldoCineOutputPort;
+        this.generarFacturaOutputPort=generarFacturaOutputPort;
     }
 
 
@@ -90,25 +93,42 @@ public class CrearPropiedadAnuncioService implements CrearPropiedadAnuncioInputP
         this.crearPropiedadAnuncioOutputPort.crearPropiedadAnuncio(
             propiedadAnuncio
         );
+        //genreacion de costo general
+        Double costoAnuncio =ChronoUnit.DAYS.between(
+                propiedadAnuncio.getFecha(), propiedadAnuncio.getFechaFin()
+        )*
+                propiedadAnuncio.getAnuncio().getCosto().getCostoVisibilidad();
+
         // en base a esto se le agregara la cantidad de dinero en el cine
-
-
-
-
         AnuncioCreadoDTO evento = new AnuncioCreadoDTO();
-        evento.setIdCine(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
+
+      //  evento.setIdCine(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
+        evento.setIdCine(UUID.fromString("bc5cdc02-db93-4f99-82de-4ac0c4c05fff"));
         evento.setAnuncioId(propiedadAnuncioId);
+
         evento.setCosto(
-                ChronoUnit.DAYS.between(
-                        propiedadAnuncio.getFecha(), propiedadAnuncio.getFechaFin()
-                )*
-                        propiedadAnuncio.getAnuncio().getCosto().getCostoVisibilidad()
+                costoAnuncio
         );
         evento.setCorrelationId(UUID.randomUUID().toString());
         // generacion de evento
+
         this.verificarSaldoCineOutputPort.publicarAnuncioCreado(
                 evento
         );
+
+
+
+        // aca se genera la factura
+        com.example.comun.DTO.FacturaAnuncio.AnuncioCreadoDTO eventoFactura = new com.example.comun.DTO.FacturaAnuncio.AnuncioCreadoDTO();
+        eventoFactura.setAnuncioId(propiedadAnuncioId);
+        eventoFactura.setCosto(
+                costoAnuncio
+        );
+        eventoFactura.setCorrelationId(UUID.randomUUID().toString());
+        eventoFactura.setUsuarioId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
+
+        this.generarFacturaOutputPort.generarFactura(eventoFactura);
+
 
         return propiedadAnuncio;
     }
