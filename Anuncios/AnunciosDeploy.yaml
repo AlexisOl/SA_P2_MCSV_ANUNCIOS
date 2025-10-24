@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: anuncios-deploy
   namespace: default
-  labels:
-    app: anuncios
 spec:
   replicas: 1
   selector:
@@ -17,32 +15,23 @@ spec:
     spec:
       containers:
         - name: anuncios
-          image: alexxus/microservicio-anuncios:v1  # Cambia por tu imagen real
+          image: IMAGE_TAG
           imagePullPolicy: Always
           ports:
             - containerPort: 8084
-              protocol: TCP
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "eks"
-            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-              value: "http://eureka-service:8765/eureka/"
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka.kafka.svc.cluster.local:9092"
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:mariadb://40.233.27.238:3307/ads_db"
             - name: SPRING_DATASOURCE_USERNAME
               value: "app_user"
             - name: SPRING_DATASOURCE_PASSWORD
               value: "appSa456."
-            - name: AWS_ACCESS_S3_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: aws-s3-credentials
-                  key: access-key
-            - name: AWS_SECRET_ACCESS_S3_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: aws-s3-credentials
-                  key: secret-key
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://eureka-service:8765/eureka/"
           resources:
             requests:
               memory: "256Mi"
@@ -50,4 +39,15 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
-
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8084
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8084
+            initialDelaySeconds: 60
+            periodSeconds: 10
