@@ -80,16 +80,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Seguridad -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.security</groupId>-->
-        <!--            <artifactId>spring-security-config</artifactId>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.security</groupId>-->
-        <!--            <artifactId>spring-security-web</artifactId>-->
-        <!--        </dependency>-->
-        <dependency>
+         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
@@ -149,10 +140,10 @@
 
 
         <!-- Eureka -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
 
         <!-- Kafka -->
         <dependency>
