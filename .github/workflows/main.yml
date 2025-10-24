@@ -4,23 +4,26 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'Anuncios/**'
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      packages: read  # Necesario para GitHub Packages
+      contents: read
+      packages: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: 'temurin'
 
-      # AÑADE ESTO: Configura Maven para GitHub Packages
+      # Configura Maven para GitHub Packages
       - name: Configure Maven Settings
         run: |
           mkdir -p ~/.m2
@@ -36,45 +39,46 @@ jobs:
           </settings>
           EOF
 
-      - name: Build with Maven
-        run: mvn -f Anuncios/pom.xml clean package -DskipTests
+      - name: Build Java project
+        run: |
+          cd Anuncios
+          mvn -B clean package -DskipTests
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker Image
+      - name: Build and push Docker image
         run: |
-          IMAGE=alexxus/mscv-anuncios:${{ github.sha }}
-          docker build -f Anuncios/Dockerfile -t $IMAGE Anuncios/
+          IMAGE=${{ secrets.DOCKER_USERNAME }}/mscv-anuncios:${{ github.sha }}
+          cd Anuncios
+          docker build -f Dockerfile -t $IMAGE .
           docker push $IMAGE
-          
-      - name: Configure AWS
-        uses: aws-actions/configure-aws-credentials@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
 
-      # GENERA KUBECONFIG CON AWS CLI (AUTOMÁTICO)
-      - name: Update kubeconfig
+      - name: Configure Kubeconfig
         run: |
-          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
-      # VERIFICA CONEXIÓN
-      - name: Test Kubernetes Connection
+      - name: Apply Kubernetes manifests
         run: |
-          kubectl get nodes
-          kubectl cluster-info
-
-      - name: Deploy to EKS
-        run: |
-          IMAGE=alexxus/mscv-anuncios:${{ github.sha }}
-          sed "s|IMAGE_TAG|$IMAGE|g" Anuncios/AnunciosDeploy.yaml | kubectl apply -f -
+          kubectl apply -f Anuncios/AnunciosDeploy.yaml
           kubectl apply -f Anuncios/AnunciosService.yaml
-          kubectl rollout status deployment/anuncios-deploy --timeout=120s
+
+      - name: Deploy to Kubernetes
+        run: |
+          IMAGE=${{ secrets.DOCKER_USERNAME }}/mscv-anuncios:${{ github.sha }}
+          kubectl set image deployment/anuncios-deploy anuncios=$IMAGE
+          kubectl rollout status deployment/anuncios-deploy --timeout=180s
