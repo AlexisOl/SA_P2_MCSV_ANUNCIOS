@@ -22,8 +22,8 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "eks"
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: "kafka.kafka.svc.cluster.local:9092"
+           # - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+           #   value: "kafka.kafka.svc.cluster.local:9092"
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:mariadb://40.233.27.238:3307/ads_db"
             - name: SPRING_DATASOURCE_USERNAME
@@ -32,6 +32,16 @@ spec:
               value: "appSa456."
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://eureka-service:8765/eureka/"
+            # Kafka MSK
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: b-1.kafkap2sa.uqqw98.c10.kafka.us-east-1.amazonaws.com:9094,b-2.kafkap2sa.uqqw98.c10.kafka.us-east-1.amazonaws.com:9094
+            - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+              value: anuncios-group
+            - name: SPRING_KAFKA_PRODUCER_ACKS
+              value: all
+            - name: SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET
+              value: earliest
+
           resources:
             requests:
               memory: "256Mi"
