@@ -50,7 +50,7 @@ jobs:
           IMAGE=alexxus/mscv-anuncios:${{ github.sha }}
           docker build -f Anuncios/Dockerfile -t $IMAGE Anuncios/
           docker push $IMAGE
-
+          
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -61,10 +61,16 @@ jobs:
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
 
-      - name: Configure Kubeconfig
+      # GENERA KUBECONFIG CON AWS CLI (AUTOMÁTICO)
+      - name: Update kubeconfig
         run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
+
+      # VERIFICA CONEXIÓN
+      - name: Test Kubernetes Connection
+        run: |
+          kubectl get nodes
+          kubectl cluster-info
 
       - name: Deploy to EKS
         run: |
