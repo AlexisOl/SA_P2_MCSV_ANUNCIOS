@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: anuncios
-          image: IMAGE_TAG
+          image: alexxus:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8084
