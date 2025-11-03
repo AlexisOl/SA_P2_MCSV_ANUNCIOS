@@ -1,11 +1,14 @@
 package com.example.Anuncios.PropiedadAnuncio.Infraestructura.Output;
 
 
+import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.CambioEstadoAnuncioOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.CrearPropiedadAnuncioOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.EstadoAnuncio.ActualizarEstadoAnuncioOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.EstadoAnuncio.EliminarAnuncioOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.ExisteAunciosActualesCIneOutputPort;
+import com.example.Anuncios.PropiedadAnuncio.Dominio.EstadoAnuncio;
 import com.example.Anuncios.PropiedadAnuncio.Dominio.PropiedadAnuncio;
+import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Output.Entity.PropiedadAnuncioEntity;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Output.Mapper.PropiedadAnuncioMapper;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Output.Repository.PropiedadAnuncioRepository;
 import lombok.AllArgsConstructor;
@@ -19,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @AllArgsConstructor
 public class PropiedadMaterialPersistenciaAdaptador implements CrearPropiedadAnuncioOutputPort,
         ActualizarEstadoAnuncioOutputPort, ExisteAunciosActualesCIneOutputPort,
-        EliminarAnuncioOutputPort {
+        EliminarAnuncioOutputPort, CambioEstadoAnuncioOutputPort {
 
     private PropiedadAnuncioRepository propiedadAnuncioRepository;
     private PropiedadAnuncioMapper propiedadAnuncioMapper;
@@ -57,5 +60,13 @@ public class PropiedadMaterialPersistenciaAdaptador implements CrearPropiedadAnu
     @Override
     public List<PropiedadAnuncio> listaAnunciosActuales() {
         return null;
+    }
+
+    @Override
+    public void cambioEstadoAnuncioOutputPort(UUID id, EstadoAnuncio estadoVenta) {
+        PropiedadAnuncioEntity entidad = this.propiedadAnuncioRepository.findById(id).orElse(null);
+        if (entidad == null) return;
+        entidad.setEstado(estadoVenta);
+        this.propiedadAnuncioRepository.save(entidad);
     }
 }

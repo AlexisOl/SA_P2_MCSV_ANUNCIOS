@@ -8,10 +8,17 @@ import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Input.CrearPropied
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.CrearFactura.GenerarFacturaOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.CrearPropiedadAnuncioOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.VerificarSaldoCineOutputPort;
+import com.example.Anuncios.PropiedadAnuncio.Dominio.EstadoAnuncio;
 import com.example.Anuncios.PropiedadAnuncio.Dominio.PropiedadAnuncio;
 import com.example.Anuncios.PropiedadAnuncio.Dominio.VigenciaAnuncio;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Kafka.DTO.AnuncioCreadoDTO;
+import com.example.comun.DTO.FacturaAnuncio.RespuestaFacturaAnuncioCreadaDTO;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -86,7 +93,7 @@ public class CrearPropiedadAnuncioService implements CrearPropiedadAnuncioInputP
                 crearPropiedadAnuncioDTO.getUsuario(),
                 anuncio,
                 VigenciaAnuncio.valueOf(crearPropiedadAnuncioDTO.getVigencia()),
-                "PENDIENTE"
+                EstadoAnuncio.PENDIENTE
         );
 
 
@@ -100,36 +107,44 @@ public class CrearPropiedadAnuncioService implements CrearPropiedadAnuncioInputP
                 propiedadAnuncio.getAnuncio().getCosto().getCostoVisibilidad();
 
         // en base a esto se le agregara la cantidad de dinero en el cine
-        AnuncioCreadoDTO evento = new AnuncioCreadoDTO();
+        com.example.comun.DTO.FacturaAnuncio.AnuncioCreadoDTO evento = new com.example.comun.DTO.FacturaAnuncio.AnuncioCreadoDTO();
 
       //  evento.setIdCine(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
-        evento.setIdCine(UUID.fromString("bc5cdc02-db93-4f99-82de-4ac0c4c05fff"));
         evento.setAnuncioId(propiedadAnuncioId);
 
         evento.setCosto(
-                costoAnuncio
+                propiedadAnuncio.getAnuncio().getCosto().getCostoVisibilidad()
         );
         evento.setCorrelationId(UUID.randomUUID().toString());
+
+
         // generacion de evento
 
-        this.verificarSaldoCineOutputPort.publicarAnuncioCreado(
-                evento
-        );
+//        this.verificarSaldoCineOutputPort.publicarAnuncioCreado(
+//                evento
+//        );
 
 
+        System.out.println(propiedadAnuncio.getFecha()+ "   "+ propiedadAnuncio.getFechaFin());
 
         // aca se genera la factura
         com.example.comun.DTO.FacturaAnuncio.AnuncioCreadoDTO eventoFactura = new com.example.comun.DTO.FacturaAnuncio.AnuncioCreadoDTO();
         eventoFactura.setAnuncioId(propiedadAnuncioId);
         eventoFactura.setCosto(
-                costoAnuncio
+                propiedadAnuncio.getAnuncio().getCosto().getCostoVisibilidad()
         );
         eventoFactura.setCorrelationId(UUID.randomUUID().toString());
-        eventoFactura.setUsuarioId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
+        eventoFactura.setUsuarioId((crearPropiedadAnuncioDTO.getUsuario()));
+        eventoFactura.setFechainicio(propiedadAnuncio.getFecha());
+        eventoFactura.setFechafin(propiedadAnuncio.getFechaFin());
 
         this.generarFacturaOutputPort.generarFactura(eventoFactura);
 
 
         return propiedadAnuncio;
     }
+
+
+
+
 }

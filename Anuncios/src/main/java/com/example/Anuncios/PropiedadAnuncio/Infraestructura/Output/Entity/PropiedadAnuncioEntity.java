@@ -1,6 +1,7 @@
 package com.example.Anuncios.PropiedadAnuncio.Infraestructura.Output.Entity;
 
 import com.example.Anuncios.Anuncio.Infraestructura.Output.Entity.AnuncioEntity;
+import com.example.Anuncios.PropiedadAnuncio.Dominio.EstadoAnuncio;
 import com.example.Anuncios.PropiedadAnuncio.Dominio.VigenciaAnuncio;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,8 @@ public class PropiedadAnuncioEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private VigenciaAnuncio  vigencia;
-    @Transient
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstadoAnuncio estado;
 
 }
