@@ -13,4 +13,8 @@ public interface PropiedadAnuncioMapper {
 
     PropiedadAnuncioEntity toPropiedadAnuncioEntity(PropiedadAnuncio entity);
 
+    List<PropiedadAnuncio> toPropiedadAnuncios(List<PropiedadAnuncioEntity> entities);
+
+    List<PropiedadAnuncioEntity> toPropiedadAnuncioEntitys(List<PropiedadAnuncio> entities);
+
 }

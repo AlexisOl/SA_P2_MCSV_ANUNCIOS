@@ -14,6 +14,7 @@ import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Output.Repository.P
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,8 +59,10 @@ public class PropiedadMaterialPersistenciaAdaptador implements CrearPropiedadAnu
     }
 
     @Override
-    public List<PropiedadAnuncio> listaAnunciosActuales() {
-        return null;
+    public List<PropiedadAnuncio> listaAnunciosActuales(LocalDate fechainicio, LocalDate fechafin) {
+        return this.propiedadAnuncioMapper.toPropiedadAnuncios(
+                this.propiedadAnuncioRepository.listaAnunciosActuales(fechainicio, fechafin)
+        );
     }
 
     @Override

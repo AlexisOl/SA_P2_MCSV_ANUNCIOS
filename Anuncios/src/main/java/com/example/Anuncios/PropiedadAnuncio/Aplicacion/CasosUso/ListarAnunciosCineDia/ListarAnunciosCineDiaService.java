@@ -7,6 +7,7 @@ import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.ExisteAunci
 import com.example.Anuncios.PropiedadAnuncio.Dominio.PropiedadAnuncio;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,9 +21,9 @@ public class ListarAnunciosCineDiaService implements ExisteAunciosActualesCIneIn
     }
 
     @Override
-    public List<PropiedadAnuncio> listaAnunciosActuales() {
+    public List<PropiedadAnuncio> listaAnunciosActuales(LocalDate fechainicio, LocalDate fechafin) {
 
 
-        return List.of();
+        return this.existeAunciosActualesCIneOutputPort.listaAnunciosActuales(fechainicio, fechafin);
     }
 }

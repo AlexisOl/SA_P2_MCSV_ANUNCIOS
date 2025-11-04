@@ -10,6 +10,11 @@ spring:
     url: jdbc:mariadb://40.233.27.238:3307/ads_db
     username: app_user
     password: appSa456.
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      max-lifetime: 1800000
   #        #  driver-class-name: com.mysql.cj.jdbc.Driver
   #        driver-class-name: org.mariadb.jdbc.Driver
   #        url: jdbc:mariadb://localhost:3306/mcsv_usuarios
@@ -32,12 +37,14 @@ spring:
         secret-key: ${AWS_SECRET_ACCESS_S3_KEY_ID}
 
   kafka:
+    admin:
+      auto-create: true
     bootstrap-servers:
       #- localhost:9092
       - b-1.kafkap2sa.uqqw98.c10.kafka.us-east-1.amazonaws.com:9094
       - b-2.kafkap2sa.uqqw98.c10.kafka.us-east-1.amazonaws.com:9094
     consumer:
-      group-id: anuncios-group
+      group-id: cines-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer

@@ -4,11 +4,15 @@ import com.example.Anuncios.Anuncio.Aplicacion.ports.Output.Eventos.VerificarCin
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.CasosUso.CompletarEstadoPropiedadAnuncio.CompletarEstadoPropiedadAnuncioService;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.CambioEstadoAnuncioOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.CrearFactura.GenerarFacturaOutputPort;
+import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.EnvioPeticionBloqueoOutputPort;
+import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.ExisteAunciosActualesCIneOutputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Output.VerificarSaldoCineOutputPort;
 
 import com.example.Anuncios.PropiedadAnuncio.Dominio.EstadoAnuncio;
+import com.example.Anuncios.PropiedadAnuncio.Dominio.PropiedadAnuncio;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Kafka.DTO.AnuncioFallidoDTO;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Kafka.DTO.CineActualizadoDTO;
+import com.example.comun.DTO.BloqueoAnuncios.BloqueoCineDTO;
 import com.example.comun.DTO.FacturaAnuncio.AnuncioCreadoDTO;
 import com.example.comun.DTO.FacturaAnuncio.CambioEstadoAnuncioDTO;
 import com.example.comun.DTO.FacturaAnuncio.RespuestaFacturaAnuncioCreadaDTO;
@@ -24,12 +28,14 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Component
 @AllArgsConstructor
-public class PropiedadAnuncioKafkaAdaptador implements VerificarSaldoCineOutputPort, GenerarFacturaOutputPort {
+public class PropiedadAnuncioKafkaAdaptador implements VerificarSaldoCineOutputPort, GenerarFacturaOutputPort, EnvioPeticionBloqueoOutputPort {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final CompletarEstadoPropiedadAnuncioService completarEstadoPropiedadAnuncioService;
@@ -67,6 +73,24 @@ public class PropiedadAnuncioKafkaAdaptador implements VerificarSaldoCineOutputP
             throw new RuntimeException("Fallo en publicar el evento de propiedad anuncio: " + e.getMessage(), e);
         }
     }
+
+
+    @Override
+    public void generarBloqueo(BloqueoCineDTO bloqueoCineDTO) {
+        try {
+            String mensaje =  objectMapper.writeValueAsString(bloqueoCineDTO);
+            Message<String> mensajeKafka = MessageBuilder
+                    .withPayload(mensaje)
+                    .setHeader(KafkaHeaders.TOPIC, "generar-bloqueo-anuncio")
+                    .setHeader(KafkaHeaders.CORRELATION_ID, UUID.randomUUID().toString())
+                    .build();
+
+            kafkaTemplate.send(mensajeKafka);
+        } catch (Exception e) {
+            throw new RuntimeException("Fallo en publicar el evento de propiedad anuncio: " + e.getMessage(), e);
+        }
+    }
+
 
     //-------------------------------------
     //-------------------------------------
@@ -129,5 +153,6 @@ public class PropiedadAnuncioKafkaAdaptador implements VerificarSaldoCineOutputP
 
 
     }
+
 
 }
