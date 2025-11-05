@@ -31,10 +31,14 @@ spring:
   cloud:
     aws:
       region:
-        static: us-east-1
+        static: ${AWS_REGION}
       credentials:
-        access-key: ${AWS_ACCESS_S3_KEY_ID}
-        secret-key: ${AWS_SECRET_ACCESS_S3_KEY_ID}
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+      s3:
+        bucket: ${AWS_S3_BUCKET}
+
+
 
   kafka:
     admin:
