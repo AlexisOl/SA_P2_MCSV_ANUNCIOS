@@ -1,6 +1,7 @@
 package com.example.Anuncios.MaterialAnuncio.Infraestructura.Output;
 
 import com.example.Anuncios.MaterialAnuncio.Aplicacion.ports.Output.CrearMaterialAnuncioOuputPort;
+import com.example.Anuncios.MaterialAnuncio.Aplicacion.ports.Output.ListarAnunciosGlobalesOutputPort;
 import com.example.Anuncios.MaterialAnuncio.Aplicacion.ports.Output.ListarMaterialAnuncioEspecificoOutputPort;
 import com.example.Anuncios.MaterialAnuncio.Dominio.MaterialAnuncio;
 import com.example.Anuncios.MaterialAnuncio.Infraestructura.Output.Mapper.MaterialAnuncioMapper;
@@ -9,11 +10,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
 @AllArgsConstructor
-public class MaterialAnuncioPersistenciaAdaptador implements CrearMaterialAnuncioOuputPort, ListarMaterialAnuncioEspecificoOutputPort {
+public class MaterialAnuncioPersistenciaAdaptador implements CrearMaterialAnuncioOuputPort, ListarMaterialAnuncioEspecificoOutputPort,
+        ListarAnunciosGlobalesOutputPort {
     private final MaterialAnuncioRepository materialAnuncioRepository;
     private final MaterialAnuncioMapper materialAnuncioMapper;
 
@@ -28,9 +31,20 @@ public class MaterialAnuncioPersistenciaAdaptador implements CrearMaterialAnunci
     }
 
     @Override
+    @Transactional
+
     public MaterialAnuncio getMaterialAnuncio(UUID idMaterialAnuncio) {
         return this.materialAnuncioMapper.toMaterialAnuncio(
                 this.materialAnuncioRepository.getByIdAnuncio_Id(idMaterialAnuncio)
+        );
+    }
+
+    @Override
+    @Transactional
+
+    public List<MaterialAnuncio> getListaMaterialAnuncios() {
+        return this.materialAnuncioMapper.toMaterialAnunciosList(
+                this.materialAnuncioRepository.findAll()
         );
     }
 }

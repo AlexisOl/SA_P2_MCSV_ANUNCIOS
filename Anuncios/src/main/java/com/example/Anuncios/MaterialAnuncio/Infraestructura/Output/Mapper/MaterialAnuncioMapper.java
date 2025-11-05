@@ -4,6 +4,8 @@ import com.example.Anuncios.MaterialAnuncio.Dominio.MaterialAnuncio;
 import com.example.Anuncios.MaterialAnuncio.Infraestructura.Output.Entity.MaterialAnuncioEntity;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 
 public interface MaterialAnuncioMapper {
@@ -11,4 +13,8 @@ public interface MaterialAnuncioMapper {
     MaterialAnuncio toMaterialAnuncio(MaterialAnuncioEntity materialAnuncioEntity);
 
     MaterialAnuncioEntity  toMaterialAnuncioEntity(MaterialAnuncio materialAnuncioDTO);
+
+
+    List<MaterialAnuncio> toMaterialAnunciosList(List<MaterialAnuncioEntity> materialAnunciosEntity);
+    List<MaterialAnuncioEntity> toMaterialAnunciosEntityList(List<MaterialAnuncio> materialAnunciosEntity);
 }

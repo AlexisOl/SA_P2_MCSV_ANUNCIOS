@@ -16,8 +16,9 @@ public class MaterialAnuncioUrlFactory {
     public MaterialAnuncio MaterialAnuncioUrlFactory(MaterialAnuncio materialAnuncio) {
         return  new MaterialAnuncio(
                 materialAnuncio.getId(),
-                materialAnuncio.getLinkvideo()!=null ? url+materialAnuncio.getLinkvideo(): null,
                 materialAnuncio.getTexto(),
+
+                materialAnuncio.getLinkvideo()!=null ? url+materialAnuncio.getLinkvideo(): null,
                 materialAnuncio.getLinkimagen()!=null ? url+materialAnuncio.getLinkimagen(): null,
                 materialAnuncio.getIdAnuncio()
         );
