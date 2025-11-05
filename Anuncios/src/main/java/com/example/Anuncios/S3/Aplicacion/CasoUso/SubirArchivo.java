@@ -36,7 +36,7 @@ public class SubirArchivo implements SubirArchivoInputPort {
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(BUCKET)
                 .key(key)
-                .acl("public-read")
+          //      .acl("public-read")
                 .contentType(contentType)
                 .build();
 
