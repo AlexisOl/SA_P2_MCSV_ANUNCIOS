@@ -81,21 +81,21 @@ public class CrearAnuncioService implements CrearAnuncioInputPort {
 
 
 
-        try {
-            // Crear DTO para notificación
-            EnvioMensajesCorreoDTO correoDTO = new EnvioMensajesCorreoDTO();
-            correoDTO.setCorreo("carlosovalle202031064@cunoc.edu.gt");
-            correoDTO.setMensaje("Nuevo anuncio creado");
-            correoDTO.setDescripcion("Se creó el anuncio con título: " + anuncio.getTitulo());
-
-            // Convertir a JSON
-            String mensaje = objectMapper.writeValueAsString(correoDTO);
-
-            // Publicar en Kafka
-            kafkaTemplate.send("creacion-auncio", mensaje);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            // Crear DTO para notificación
+//            EnvioMensajesCorreoDTO correoDTO = new EnvioMensajesCorreoDTO();
+//            correoDTO.setCorreo("carlosovalle202031064@cunoc.edu.gt");
+//            correoDTO.setMensaje("Nuevo anuncio creado");
+//            correoDTO.setDescripcion("Se creó el anuncio con título: " + anuncio.getTitulo());
+//
+//            // Convertir a JSON
+//            String mensaje = objectMapper.writeValueAsString(correoDTO);
+//
+//            // Publicar en Kafka
+//            kafkaTemplate.send("creacion-auncio", mensaje);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
 
         return nuevoAnuncio;
