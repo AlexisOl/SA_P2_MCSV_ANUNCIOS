@@ -20,4 +20,17 @@ public interface PropiedadAnuncioRepository extends JpaRepository<PropiedadAnunc
             " or pa.fechaFin between  :fecha and :fechafin) " +
             "and pa.estado = 'EXITOSA'")
     List<PropiedadAnuncioEntity> listaAnunciosActuales(@Param("fecha") LocalDate fechainicio, @Param("fechafin") LocalDate fechafin);
+
+    @Query("SELECT pa, m FROM PropiedadAnuncioEntity pa " +
+            "JOIN pa.anuncio a " +
+            "LEFT JOIN MaterialAnuncioEntity m ON m.idAnuncio.id = a.id " +
+            "WHERE (" +
+            "   :fecha BETWEEN pa.fecha AND pa.fechaFin " +
+            "   OR :fechafin BETWEEN pa.fecha AND pa.fechaFin " +
+            "   OR pa.fecha BETWEEN :fecha AND :fechafin " +
+            "   OR pa.fechaFin BETWEEN :fecha AND :fechafin" +
+            ") " +
+            "AND pa.estado = 'EXITOSA'")
+    List<Object[]> listaAnunciosActualesMaterial(@Param("fecha") LocalDate fechainicio,
+                                         @Param("fechafin") LocalDate fechafin);
 }

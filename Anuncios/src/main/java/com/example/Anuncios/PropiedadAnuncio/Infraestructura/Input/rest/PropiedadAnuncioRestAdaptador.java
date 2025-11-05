@@ -7,6 +7,7 @@ import com.example.Anuncios.PropiedadAnuncio.Aplicacion.CasosUso.CrearPropiedadA
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Input.CrearPropiedadAnuncioInputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Input.ExisteAunciosActualesCIneInputPort;
 import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Input.GenerarBloqueoInputPort;
+import com.example.Anuncios.PropiedadAnuncio.Aplicacion.ports.Input.ListaAnunciosActualesMaterialInputPort;
 import com.example.Anuncios.PropiedadAnuncio.Dominio.PropiedadAnuncio;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Input.rest.Mapper.PropiedadAnuncioRestMapper;
 import com.example.Anuncios.PropiedadAnuncio.Infraestructura.Input.rest.Model.ResponsePropiedadAnuncioDTO;
@@ -28,6 +29,7 @@ public class PropiedadAnuncioRestAdaptador {
 
     private final CrearPropiedadAnuncioInputPort  crearPropiedadAnuncioInputPort;
     private final ExisteAunciosActualesCIneInputPort existeAunciosActualesCIneInputPort;
+    private final ListaAnunciosActualesMaterialInputPort listaAnunciosActualesMaterialInputPort;
     private final PropiedadAnuncioRestMapper  propiedadAnuncioRestMapper;
     private final GenerarBloqueoInputPort generarBloqueoInputPort;
 
@@ -47,6 +49,12 @@ public class PropiedadAnuncioRestAdaptador {
     @Transactional
     public List<PropiedadAnuncio> anunciosActuales(@PathVariable("fecha_inicio") LocalDate fecha_inicio, @PathVariable("fecha_fin") LocalDate fecha_fin) {
         return (this.existeAunciosActualesCIneInputPort.listaAnunciosActuales(fecha_inicio, fecha_fin)) ;
+    }
+
+    @GetMapping("/anunciosActualesMaterial/{fecha_inicio}/{fecha_fin}")
+    @Transactional
+    public List<PropiedadAnuncio> anunciosActualesMaterial(@PathVariable("fecha_inicio") LocalDate fecha_inicio, @PathVariable("fecha_fin") LocalDate fecha_fin) {
+        return (this.listaAnunciosActualesMaterialInputPort.listaAnunciosActualesMaterial(fecha_inicio, fecha_fin)) ;
     }
 
     @PostMapping("/GenerarBloqueo")

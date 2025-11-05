@@ -2,6 +2,7 @@ package com.example.Anuncios.PropiedadAnuncio.Dominio;
 
 
 import com.example.Anuncios.Anuncio.Dominio.Anuncio;
+import com.example.Anuncios.MaterialAnuncio.Dominio.MaterialAnuncio;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,17 +19,22 @@ public class PropiedadAnuncio {
     private Anuncio anuncio;
     private VigenciaAnuncio vigencia;
     private EstadoAnuncio estado;
+    // ← AÑADE ESTO
+    private MaterialAnuncio materialAnuncio;
 
-
-    public PropiedadAnuncio(UUID id, LocalDate fecha, LocalDate fechaFin, UUID usuario,Anuncio anuncio, VigenciaAnuncio vigencia,
-                            EstadoAnuncio estado) {
+    public PropiedadAnuncio(UUID id, LocalDate fecha, LocalDate fechaFin, UUID usuario,
+                            Anuncio anuncio, VigenciaAnuncio vigencia, EstadoAnuncio estado) {
         this.id = id;
         this.fecha = fecha;
         this.fechaFin = fechaFin;
         this.usuario = usuario;
         this.anuncio = anuncio;
         this.vigencia = vigencia;
-        this.estado= estado;
-
+        this.estado = estado;
     }
+
+    // Constructor vacío
+    public PropiedadAnuncio() {}
+
+
 }
