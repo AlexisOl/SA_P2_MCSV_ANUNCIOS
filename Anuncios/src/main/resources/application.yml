@@ -21,6 +21,13 @@ spring:
   #        username: root
   #        password: password
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 100MB
+      file-size-threshold: 0
+
   jpa:
     hibernate:
       ddl-auto: update
