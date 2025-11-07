@@ -64,7 +64,7 @@ public class PropiedadAnuncioKafkaAdaptador implements VerificarSaldoCineOutputP
             String mensaje =  objectMapper.writeValueAsString(anuncioCreado);
             Message<String> mensajeKafka = MessageBuilder
                     .withPayload(mensaje)
-                    .setHeader(KafkaHeaders.TOPIC, "propiedad-anuncio-creado")
+                    .setHeader(KafkaHeaders.TOPIC, "generar-factura-anuncio")
                     .setHeader(KafkaHeaders.CORRELATION_ID, anuncioCreado.getCorrelationId())
                     .build();
 
